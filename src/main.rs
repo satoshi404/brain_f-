@@ -1,9 +1,21 @@
 use brain::brain_fuck::{self, KindToken, BUFFER_SIZE};
-
-
-
+use std::fs::read_to_string;
 fn main() {
-    let source: String = ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.,.".to_string();
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        eprintln!(" 
+    ==========================================
+        -- Brainfuck interpreter --\n
+    ==========================================
+    Author: @Satoshi\n
+    Version: 0.1.0\n
+    License: MIT\n
+    Usage: brainfuck <file> \n
+\tExample: brainfuck hello.bf\n");
+        std::process::exit(1);
+    }
+    let path: &str = &args[1];
+    let source: String = read_to_string(path).expect("( main ) Error reading file");
     let mut cursor: usize = 0;
     let mut data: Vec<u8> = vec![0; BUFFER_SIZE]; 
     let mut tokens: Vec<KindToken> = brain_fuck::tokenizer(&source);

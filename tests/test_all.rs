@@ -1,6 +1,6 @@
 use brain::brain_fuck::{self, BUFFER_SIZE};
 
-const TOKENS_COUNT: usize = 8; // Size tokens kind
+const TOKENS_COUNT: usize = 9; // Size tokens kind
 
 #[cfg(test)]
 mod tests {

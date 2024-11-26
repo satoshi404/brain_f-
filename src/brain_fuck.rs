@@ -5,35 +5,48 @@ pub const BUFFER_SIZE: usize = 30000;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum KindToken {
+    Comment,
     Plus,
     Minus,
     Dot,
     Comma,
-    LeftArrow,
     LeftBracket,
     RightBracket,
+    LeftArrow,
     RightArrow,
 }
 
-
 pub fn tokenizer(path: &str) -> Vec<KindToken> {
     let mut tokens: Vec<KindToken> = Vec::new();
-    for ch in path.chars() {
+    let mut chars = path.chars().peekable(); // Use peekable to look ahead
+
+    while let Some(ch) = chars.next() {
         match ch {
-            ' ' => continue,
-            '+' => tokens.push(KindToken::Plus ),
-            '-' => tokens.push(KindToken::Minus ),
+            ' ' | '\n' | '\t' => continue, // Ignore whitespace
+            '$' => {
+                // Skip characters until the end of the line
+                while let Some(next_ch) = chars.next() {
+                    if next_ch == '\n' {
+                        break; // End of comment
+                    }
+                }
+                tokens.push(KindToken::Comment); // Add comment token
+            }
+            '+' => tokens.push(KindToken::Plus),
+            '-' => tokens.push(KindToken::Minus),
             '.' => tokens.push(KindToken::Dot),
             ',' => tokens.push(KindToken::Comma),
             '[' => tokens.push(KindToken::LeftBracket),
             ']' => tokens.push(KindToken::RightBracket),
             '<' => tokens.push(KindToken::LeftArrow),
             '>' => tokens.push(KindToken::RightArrow),
-            _ => panic!("( tokenizer ) Token invalid"),
+            _ => panic!("(tokenizer) Token invalid: {}", ch),
         }
     }
+    
     tokens
 }
+
 
 pub fn cursor_inc(cursor: &mut usize) {
     if *cursor < BUFFER_SIZE {
@@ -103,12 +116,14 @@ pub fn cell_input(cells: &mut Vec<u8>, cursor: usize) {
     cells[cursor] = buff[0];
 }
 
+
 pub fn interpreter(tokens: &mut Vec<KindToken>, cells: &mut Vec<u8>, cursor: &mut usize) {
     let mut pc: usize = 0; // Program counter
     let mut loop_stack:Vec<usize> = Vec::new();
 
     while pc < tokens.len() {
         match &tokens[pc] {
+            KindToken::Comment => {} // Ignore comments
             KindToken::Plus => cell_inc(cells, *cursor),
             KindToken::Minus => cell_dec(cells, *cursor),
             KindToken::Dot => cell_write(cells, *cursor), 
