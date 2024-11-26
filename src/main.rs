@@ -7,11 +7,10 @@ fn main() {
     ==========================================
         -- Brainfuck interpreter --\n
     ==========================================
-    Author: @Satoshi\n
-    Version: 0.1.0\n
-    License: MIT\n
-    Usage: brainfuck <file> \n
-\tExample: brainfuck hello.bf\n");
+    Author: Satoshi\n
+    Version: 1.0\n
+    License: <Satoshi -_->\n
+    Usage: brainfuck <file.bf>\n");
         std::process::exit(1);
     }
     let path: &str = &args[1];
